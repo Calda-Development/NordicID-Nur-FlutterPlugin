@@ -1,0 +1,4 @@
+package example.android.app.libs.NurApiAndroid
+
+configurations.maybeCreate("default")
+artifacts.add("default", file('NurApiAndroid.aar'))

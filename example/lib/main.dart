@@ -32,7 +32,8 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _nordicidnurpluginPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await _nordicidnurpluginPlugin.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -51,11 +52,78 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        appBar: AppBar(title: const Text('Plugin example app')),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Running on: $_platformVersion\n'),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () async {
+                        await _nordicidnurpluginPlugin.startDeviceRequest();
+                      },
+                      child: Text('startDeviceRequest'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Text('1. Press and keep trigger button down. (Aiming started)'),
+                Text('2. Aim to barcode'),
+                Text('3. Release trigger for starting scan.'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () async {
+                        await _nordicidnurpluginPlugin.scanBarcode();
+                      },
+                      child: Text('scanBarcode'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Text('Single tag must found before read accepted.'),
+                Text('Press Trigger button for starting single tag read.'),
+                Text('Point reader antenna near tag (~5cm)'),
+                Text(
+                  'Reading stop automatically when single tag found or timeout (7 sec)',
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () async {
+                        await _nordicidnurpluginPlugin.scanSingleRFID();
+                      },
+                      child: Text('scanSingleRFID'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '1. Press and keep trigger button down. (Inventory started)',
+                ),
+                Text('2. Release trigger to stop'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () async {
+                        await _nordicidnurpluginPlugin.scanMultipleRFID();
+                      },
+                      child: Text('scanMultipleRFID'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

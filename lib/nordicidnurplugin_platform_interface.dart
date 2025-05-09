@@ -26,4 +26,20 @@ abstract class NordicidnurpluginPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<void> startDeviceRequest() {
+    throw UnimplementedError('startDeviceRequest() has not been implemented.');
+  }
+
+  Future<void> scanBarcode() {
+    throw UnimplementedError('scanBarcode() has not been implemented.');
+  }
+
+  Future<void> scanSingleRFID() {
+    throw UnimplementedError('scanSingleRFID() has not been implemented.');
+  }
+
+  Future<void> scanMultipleRFID() {
+    throw UnimplementedError('scanMultipleRFID() has not been implemented.');
+  }
 }

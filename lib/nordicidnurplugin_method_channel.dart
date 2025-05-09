@@ -11,7 +11,29 @@ class MethodChannelNordicidnurplugin extends NordicidnurpluginPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version = await methodChannel.invokeMethod<String>(
+      'getPlatformVersion',
+    );
     return version;
+  }
+
+  @override
+  Future<void> startDeviceRequest() async {
+    await methodChannel.invokeMethod<void>('startDeviceRequest');
+  }
+
+  @override
+  Future<void> scanBarcode() async {
+    await methodChannel.invokeMethod<void>('scanBarcode');
+  }
+
+  @override
+  Future<void> scanSingleRFID() async {
+    await methodChannel.invokeMethod<void>('scanSingleRFID');
+  }
+
+  @override
+  Future<void> scanMultipleRFID() async {
+    await methodChannel.invokeMethod<void>('scanMultipleRFID');
   }
 }

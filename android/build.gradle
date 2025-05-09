@@ -18,6 +18,13 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+//        flatDir {
+//            dirs project(':nordicidnurplugin').file("libs")
+//        }
+        flatDir {
+            //directory name
+            dirs 'libs'
+        }
     }
 }
 
@@ -48,8 +55,47 @@ android {
     }
 
     dependencies {
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
+
+//        api(name: 'NurApiAndroid.aar', ext: 'aar')
+//        api(name: 'NurApiAndroid', ext: 'aar')
+//        api(name: 'NurDeviceUpdate', ext: 'aar')
+//        api(name: 'NurSmartPair', ext: 'aar')
+//
+//        api(name: 'NiduLib', ext: 'jar')
+//        api(name: 'NurApi', ext: 'jar')
+//        api(name: 'TDTLib', ext: 'jar')
+
+//        implementation fileTree(dir: 'libs', include: ['*.aar'])
+//        implementation files("libs/NurApiAndroid.aar")
+
+//        implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+//        implementation project(path: ':libs/NurApiAndroid.aar', configuration: 'default')
+
+        implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+        compileOnly(name: 'NurApiAndroid', ext: 'aar')
+        compileOnly(name: 'NurDeviceUpdate', ext: 'aar')
+        compileOnly(name: 'NurSmartPair', ext: 'aar')
+
+        // https://github.com/NordicID/nur_nurapi_android
+//        compileOnly files('libs/NurApiAndroid.aar')
+//        compileOnly files('libs/NurDeviceUpdate.aar')
+        // Nordic ID Smart Pair library
+//        compileOnly files('libs/NurSmartPair.aar')
+
+        implementation files('libs/NiduLib.jar')
+        implementation files('libs/NurApi.jar')
+
+        // Tag Data Translation library for manipulate GS1 coded tags.
+        implementation files('libs/TDTLib.jar')
+
+        // Android BLE Scanner Compat library
+        // https://github.com/NordicSemiconductor/Android-Scanner-Compat-Library
+        implementation 'no.nordicsemi.android.support.v18:scanner:1.4.0'
     }
 
     testOptions {

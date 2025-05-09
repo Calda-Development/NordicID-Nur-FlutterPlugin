@@ -37,6 +37,23 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    dependencies {
+        implementation(files("libs/NurApiAndroid/NurApiAndroid.aar"))
+        implementation(files("libs/NurDeviceUpdate/NurDeviceUpdate.aar"))
+        implementation(files("libs/NurSmartPair/NurSmartPair.aar"))
+        implementation("no.nordicsemi.android.support.v18:scanner:1.4.0")
+    }
+
+//    dependencies {
+//        implementation files('libs/NurApiAndroid/NurApiAndroid.aar')
+//        implementation files('libs/NurDeviceUpdate/NurDeviceUpdate.aar')
+//        implementation files('libs/NurSmartPair/NurSmartPair.aar')
+//        implementation 'no.nordicsemi.android.support.v18:scanner:1.4.0'
+//        implementation 'no.nordicsemi.android:dfu:1.9.0'
+//        implementation 'androidx.multidex:multidex:2.0.1'
+//
+//    }
 }
 
 flutter {

@@ -7,13 +7,19 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockNordicidnurpluginPlatform
     with MockPlatformInterfaceMixin
     implements NordicidnurpluginPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<void> startDeviceRequest() {
+    // TODO: implement startDeviceRequest
+    throw UnimplementedError();
+  }
 }
 
 void main() {
-  final NordicidnurpluginPlatform initialPlatform = NordicidnurpluginPlatform.instance;
+  final NordicidnurpluginPlatform initialPlatform =
+      NordicidnurpluginPlatform.instance;
 
   test('$MethodChannelNordicidnurplugin is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelNordicidnurplugin>());
@@ -21,7 +27,8 @@ void main() {
 
   test('getPlatformVersion', () async {
     Nordicidnurplugin nordicidnurpluginPlugin = Nordicidnurplugin();
-    MockNordicidnurpluginPlatform fakePlatform = MockNordicidnurpluginPlatform();
+    MockNordicidnurpluginPlatform fakePlatform =
+        MockNordicidnurpluginPlatform();
     NordicidnurpluginPlatform.instance = fakePlatform;
 
     expect(await nordicidnurpluginPlugin.getPlatformVersion(), '42');
