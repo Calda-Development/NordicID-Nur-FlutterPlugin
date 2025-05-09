@@ -17,6 +17,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
+  bool _doesHaveRequiredPermissions = false;
   final _nordicidnurpluginPlugin = Nordicidnurplugin();
 
   @override
@@ -38,6 +39,10 @@ class _MyAppState extends State<MyApp> {
       platformVersion = 'Failed to get platform version.';
     }
 
+    bool doesHaveRequiredPermissions = false;
+    doesHaveRequiredPermissions =
+        await _nordicidnurpluginPlugin.doesHaveRequiredPermissions();
+
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
@@ -45,6 +50,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _platformVersion = platformVersion;
+      _doesHaveRequiredPermissions = doesHaveRequiredPermissions;
     });
   }
 
@@ -59,7 +65,33 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Running on: $_platformVersion\n'),
+                Text('Running on: $_platformVersion'),
+                SizedBox(height: 8),
+                Text('Does have permissions: $_doesHaveRequiredPermissions'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () async {
+                        await _nordicidnurpluginPlugin
+                            .requestRequiredPermissions();
+                      },
+                      child: Text('Request Permissions'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () async {
+                        await _nordicidnurpluginPlugin.init();
+                      },
+                      child: Text('Init'),
+                    ),
+                  ],
+                ),
                 SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

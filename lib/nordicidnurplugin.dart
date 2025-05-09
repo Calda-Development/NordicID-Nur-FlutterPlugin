@@ -5,6 +5,18 @@ class Nordicidnurplugin {
     return NordicidnurpluginPlatform.instance.getPlatformVersion();
   }
 
+  Future<bool> doesHaveRequiredPermissions() {
+    return NordicidnurpluginPlatform.instance.doesHaveRequiredPermissions();
+  }
+
+  Future<void> requestRequiredPermissions() {
+    return NordicidnurpluginPlatform.instance.requestRequiredPermissions();
+  }
+
+  Future<void> init() {
+    return NordicidnurpluginPlatform.instance.init();
+  }
+
   Future<void> startDeviceRequest() {
     return NordicidnurpluginPlatform.instance.startDeviceRequest();
   }
@@ -20,6 +32,4 @@ class Nordicidnurplugin {
   Future<void> scanMultipleRFID() {
     return NordicidnurpluginPlatform.instance.scanMultipleRFID();
   }
-
-  // NurDeviceListActivity.startDeviceRequest(MainActivity.this, mNurApi);
 }

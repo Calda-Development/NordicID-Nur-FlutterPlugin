@@ -27,6 +27,20 @@ abstract class NordicidnurpluginPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
+  Future<bool> doesHaveRequiredPermissions() {
+    throw UnimplementedError(
+        'doesHaveRequiredPermissions() has not been implemented.');
+  }
+
+  Future<void> requestRequiredPermissions() {
+    throw UnimplementedError(
+        'requestRequiredPermissions() has not been implemented.');
+  }
+
+  Future<void> init() {
+    throw UnimplementedError('init() has not been implemented.');
+  }
+
   Future<void> startDeviceRequest() {
     throw UnimplementedError('startDeviceRequest() has not been implemented.');
   }

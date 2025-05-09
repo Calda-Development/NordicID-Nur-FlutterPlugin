@@ -23,6 +23,23 @@ class MethodChannelNordicidnurplugin extends NordicidnurpluginPlatform {
   }
 
   @override
+  Future<bool> doesHaveRequiredPermissions() async {
+    final result =
+        await methodChannel.invokeMethod<bool>('doesHaveRequiredPermissions');
+    return result ?? false;
+  }
+
+  @override
+  Future<void> init() async {
+    await methodChannel.invokeMethod<void>('init');
+  }
+
+  @override
+  Future<void> requestRequiredPermissions() async {
+    await methodChannel.invokeMethod<void>('requestRequiredPermissions');
+  }
+
+  @override
   Future<void> scanBarcode() async {
     await methodChannel.invokeMethod<void>('scanBarcode');
   }

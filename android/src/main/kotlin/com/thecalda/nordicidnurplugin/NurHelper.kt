@@ -1,8 +1,8 @@
 package com.thecalda.nordicidnurplugin
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.util.Log
 import android.widget.Toast
 import com.nordicid.nuraccessory.*
@@ -12,6 +12,7 @@ import com.nordicid.tdt.*
 import kotlinx.coroutines.*
 
 
+@SuppressLint("StaticFieldLeak")
 object NurHelper {
 
     const val TAG: String = "NUR_HELPER" //Can be used for filtering Log's at Logcat
@@ -29,6 +30,8 @@ object NurHelper {
     //Need to keep track when barcode mScanning or mAiming ongoing in case it cancelled by trigger press or program leave
     private var mScanning = false
     private var mAiming = false
+
+    private var triggerDown = false
 
     private var barcodeScanMode = false
     private var singleRFIDScanMode = false
@@ -52,8 +55,6 @@ object NurHelper {
         mIsConnected = false
         mIsAccessorySupported = false
 
-        Toast.makeText(activity, "Start searching. Make sure device power ON!", Toast.LENGTH_LONG).show();
-
         //Create NurApi handle.
         mNurApi = NurApi()
 
@@ -66,11 +67,13 @@ object NurHelper {
         // In this activity, we use mNurApiListener for receiving events
         mNurApi.setListener(mNurApiListener);
 
-
         //Bluetooth LE scanner need to find EXA's near
         BleScanner.init(activity);
+    }
 
+    fun startDeviceRequest(activity: Activity) {
         Log.i(TAG, "startDeviceRequest")
+//        Toast.makeText(activity, "Start searching. Make sure device power ON!", Toast.LENGTH_LONG).show();
         NurDeviceListActivity.startDeviceRequest(activity, mNurApi)
     }
 
@@ -123,10 +126,10 @@ object NurHelper {
         singleRFIDScanMode = true
         multipleRFIDScanMode = false
 
-        CoroutineScope(Dispatchers.Main).launch {
+        val thread = Thread {
             mAccExt?.cancelBarcodeAsync()
         }
-
+        thread.start()
     }
 
     fun scanMultipleRFID() {
@@ -135,6 +138,11 @@ object NurHelper {
         barcodeScanMode = false
         singleRFIDScanMode = false
         multipleRFIDScanMode = true
+
+        val thread = Thread {
+            mAccExt?.cancelBarcodeAsync()
+        }
+        thread.start()
     }
 
     /**
@@ -164,7 +172,32 @@ object NurHelper {
         }
 
         override fun inventoryStreamEvent(event: NurEventInventory) {
-            Log.i(TAG, "inventoryStreamEvent")
+//            Log.i(TAG, "inventoryStreamEvent")
+            try {
+                if (event.stopped) {
+                    //InventoryStreaming is not active for ever. It automatically stopped after ~20 sec but it can be started again immediately if needed.
+                    //check if need to restart streaming
+                    if (triggerDown) {
+                        mNurApi.startInventoryStream(); //Trigger button still down so start it again.
+                    }
+                } else {
+                    if (event.tagsAdded > 0) {
+
+                        val tagStorage: NurTagStorage = mNurApi.getStorage() //Storage contains all tags found
+
+                        for (x in 0 until event.tagsAdded) {
+                            val tag: NurTag = tagStorage.get(x)
+
+                            Log.i(TAG, "tag: ${tag.getEpcString()}")
+//
+//                            val epcString: String = NurApi.byteArrayToHexString(tag.epc)
+                        }
+
+                    }
+                }
+            } catch (ex: java.lang.Exception) {
+                Log.e(TAG, "${ex.message}")
+            }
         }
 
         override fun inventoryExtendedStreamEvent(event: NurEventInventory) {
@@ -211,7 +244,7 @@ object NurHelper {
                 Log.i(TAG, "Connected to (NurRespReaderInfo): ${ri.name}, ${ri.altSerial}")
 
             } catch (ex: java.lang.Exception) {
-//                mUiConnStatusText = ex.message
+                Log.e(TAG, "${ex.message}")
             }
 
             mIsConnected = true
@@ -361,8 +394,10 @@ object NurHelper {
         } else if (multipleRFIDScanMode) {
             if (event.direction == 1) {
 //                StartInventoryStream(); //Start Inventory streaming.
+                startRFIDScanStream();
             } else if (event.direction == 0) {
 //                StopInventoryStream(); //Trigger released. Stop streaming if running.
+                stopRFIDScanStream();
             }
         }
 
@@ -373,7 +408,7 @@ object NurHelper {
     // ScanSingleTagThread
     private fun singleRFIDScan() {
         Log.i(TAG, "singleRFIDScan");
-        if (singleRFIDScanTaskRunning) {
+        if (singleRFIDScanTaskRunning || triggerDown) {
             return
         }
 
@@ -410,8 +445,9 @@ object NurHelper {
                         val tag: NurTag = mNurApi.fetchTagAt(true, 0) //Get tag information from pos 0
 
                         //We looking for same tag in antenna field seen 3 times in row. isSameTag function make sure it is.
-                        if (isSameTag(tag.getEpcString())) {singleRFIDScanTagFoundCount++}
-                        else {
+                        if (isSameTag(tag.getEpcString())) {
+                            singleRFIDScanTagFoundCount++
+                        } else {
                             singleRFIDScanTagFoundCount = 1 //It was not. Start all over.
                         }
 
@@ -433,7 +469,10 @@ object NurHelper {
                                 Log.i(TAG, "gs: $gs")
                             } catch (ex: java.lang.Exception) {
                                 Log.i(TAG, "Single Tag found!")
-                                Log.i(TAG, "EPC= ${tag.getEpcString()}, TID= ${NurApi.byteArrayToHexString(tag.getIrData())}")
+                                Log.i(
+                                    TAG,
+                                    "EPC= ${tag.getEpcString()}, TID= ${NurApi.byteArrayToHexString(tag.getIrData())}"
+                                )
                             }
 
                             /*
@@ -459,7 +498,7 @@ object NurHelper {
                 }
 
                 //We try scan max 5000 millisec
-                if(System.currentTimeMillis() >= time_start+5000) {
+                if (System.currentTimeMillis() >= time_start + 5000) {
 //                    //Give up.
 //                    mUiResultMsg = "No single tag found";
 //                    mUiResultColor = Color.RED;
@@ -486,6 +525,51 @@ object NurHelper {
         }
         singleRFIDScanThread.start()
 
+    }
+
+    /**
+     * Start inventory streaming. After this you can receive InventoryStream events.
+     * Inventory stream is active around 20 sec then stopped automatically. Event received about the state of streaming so you can start it immediately again.
+     */
+    private fun startRFIDScanStream() {
+        Log.i(TAG, "startRFIDScanStream");
+        if (singleRFIDScanTaskRunning || triggerDown) {
+            // mInvStreamButton.setChecked(false);
+            return //Already running tasks so let's not disturb that operation.
+        }
+
+        mNurApi.setSetupTxLevel(NurApi.TXLEVEL_27)
+
+        try {
+            mNurApi.clearIdBuffer() //This command clears all tag data currently stored into the module’s memory as well as the API's internal storage.
+            mNurApi.startInventoryStream() //Kick inventory stream on. Now inventoryStreamEvent handler offers inventory results.
+            triggerDown = true //Flag to indicate inventory stream running
+//            mTagsAddedCounter = 0
+//            mUiResultMsg = "Tags:" + java.lang.String.valueOf(mTagsAddedCounter)
+//            mUiStatusMsg = "Inventory streaming..."
+        } catch (ex: java.lang.Exception) {
+            Log.e(TAG, "${ex.message}")
+        }
+    }
+
+    /**
+     * Stop streaming.
+     */
+    private fun stopRFIDScanStream() {
+        Log.i(TAG, "stopRFIDScanStream");
+
+        try {
+            if (mNurApi.isInventoryStreamRunning()) {
+                mNurApi.stopInventoryStream()
+            }
+            triggerDown = false
+//            mUiStatusMsg = "Waiting button press..."
+//            mUiStatusColor = Color.BLACK
+        } catch (ex: java.lang.Exception) {
+            Log.e(TAG, "${ex.message}")
+//            mUiResultMsg = ex.message
+//            mUiResultColor = Color.RED
+        }
     }
 
     /**

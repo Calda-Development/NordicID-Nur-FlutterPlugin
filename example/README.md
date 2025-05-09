@@ -1,16 +1,68 @@
-# nordicidnurplugin_example
+# NordicID Nur Flutter Plugin
 
-Demonstrates how to use the nordicidnurplugin plugin.
+![Supported_platforms](https://img.shields.io/badge/Supported_platforms-Android-blue)
 
-## Getting Started
+![Tested_on](https://img.shields.io/badge/Tested_on-Brady_HH86_RFID/Barcode_Reader-blue)
 
-This project is a starting point for a Flutter application.
+## Description
 
-A few resources to get you started if this is your first Flutter project:
+`nordicidnurplugin` is a Flutter plugin that integrates with Brady HH86 scanner device. 
+It supports basic features like connecting to the scanner device, scanning QR codes, 
+scanning single RFID tag and scanning multiple RFID tags at once.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Example
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+nordicidnurplugin_example demonstrates how to use the nordicidnurplugin plugin.
+
+## API reference
+
+### Instantiate the plugin
+```
+final _nordicIdNurPlugin = Nordicidnurplugin();
+```
+### Handling required permissions
+The plugin contains all the necessary logic for requesting required permissions, 
+you just have to call the corresponding functions.
+
+```
+final doesHaveRequiredPermissions = await _nordicIdNurPlugin.doesHaveRequiredPermissions();
+```
+
+Returns true if the app has required permissions, false otherwise.
+
+To request actual permissions, call:
+
+```
+await _nordicIdNurPlugin.requestRequiredPermissions();
+```
+
+### Initialising the plugin
+
+```
+await _nordicIdNurPlugin.init();
+```
+
+### Discover devices to connect to
+
+```
+await _nordicIdNurPlugin.startDeviceRequest();
+```
+
+### Scan QR/barcode
+
+```
+await _nordicIdNurPlugin.scanBarcode();
+```
+
+### Scan single RFID
+
+```
+await _nordicIdNurPlugin.scanSingleRFID();
+```
+
+### Scan multiple RFID
+
+```
+await _nordicIdNurPlugin.scanMultipleRFID();
+```
+
