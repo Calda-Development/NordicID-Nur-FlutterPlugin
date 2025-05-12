@@ -7,15 +7,17 @@ import com.nordicid.nurapi.*
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 
-// import io.flutter.plugin.common.MethodChannel.Result;
+// import io.flutter.plugin.common.MethodChannel.Result
 
 /** NordicidnurpluginPlugin */
+/// https://stackoverflow.com/questions/56852851/how-do-i-best-give-multiple-arguments-with-the-java-version-of-flutters-methodch
+
 class NordicidnurpluginPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
@@ -31,12 +33,14 @@ class NordicidnurpluginPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, 
   private val CHANNEL_requestRequiredPermissions: String = "requestRequiredPermissions"
 
   private val CHANNEL_init: String = "init"
-  private val CHANNEL_startDeviceRequest: String = "startDeviceRequest"
+  private val CHANNEL_isInitialised: String = "isInitialised"
+  private val CHANNEL_isConnected: String = "isConnected"
+  private val CHANNEL_startDeviceDiscovery: String = "startDeviceDiscovery"
+  private val CHANNEL_disconnect: String = "disconnect"
 
   private val CHANNEL_scanBarcode: String = "scanBarcode"
   private val CHANNEL_scanSingleRFID: String = "scanSingleRFID"
-  private val CHANNEL_scanMultipleRFID: String = "scanMultipleRFID"
-
+  private val CHANNEL_setInventoryStreamMode: String = "setInventoryStreamMode"
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL)
@@ -57,27 +61,46 @@ class NordicidnurpluginPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, 
 
     } else if (call.method == CHANNEL_init) {
 
-      NurHelper.init(activity)
+      val autoConnect: Boolean = call.argument("autoConnect") ?: false
+
+      NurHelper.init(activity, channel, autoConnect)
       result.success(true)
 
-    } else if (call.method == CHANNEL_startDeviceRequest) {
+    } else if (call.method == CHANNEL_isInitialised) {
+      val isInitialised: Boolean = NurHelper.isInitialised()
+      result.success(isInitialised)
 
-      NurHelper.startDeviceRequest(activity)
+    } else if (call.method == CHANNEL_isConnected) {
+      val isConnected: Boolean = NurHelper.isConnected()
+      result.success(isConnected)
+
+    } else if (call.method == CHANNEL_startDeviceDiscovery) {
+
+      NurHelper.startDeviceDiscovery(activity)
+      result.success(true)
+
+    } else if (call.method == CHANNEL_disconnect) {
+
+      NurHelper.disconnect()
       result.success(true)
 
     } else if (call.method == CHANNEL_scanBarcode ) {
 
-      NurHelper.scanBarcode()
+      val timeout: Int = call.argument("timeout") ?: 5000
+
+      NurHelper.scanBarcode(timeout)
 
       result.success(true)
     } else if (call.method == CHANNEL_scanSingleRFID ) {
 
-      NurHelper.scanSingleRFID()
+      val timeout: Int = call.argument("timeout") ?: 5000
+
+      NurHelper.scanSingleRFID(timeout)
 
       result.success(true)
-    } else if (call.method == CHANNEL_scanMultipleRFID ) {
+    } else if (call.method == CHANNEL_setInventoryStreamMode ) {
 
-      NurHelper.scanMultipleRFID()
+      NurHelper.setInventoryStreamMode()
 
       result.success(true)
     } else {

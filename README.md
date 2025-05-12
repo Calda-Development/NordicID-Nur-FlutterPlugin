@@ -16,53 +16,12 @@ nordicidnurplugin_example demonstrates how to use the nordicidnurplugin plugin.
 
 ## API reference
 
-### Instantiate the plugin
+Check all available methods in:
 ```
-final _nordicIdNurPlugin = Nordicidnurplugin();
-```
-### Handling required permissions
-The plugin contains all the necessary logic for requesting required permissions,
-you just have to call the corresponding functions.
-
-```
-final doesHaveRequiredPermissions = await _nordicIdNurPlugin.doesHaveRequiredPermissions();
+lib/nordicidnurplugin.dart
 ```
 
-Returns true if the app has required permissions, false otherwise.
-
-To request actual permissions, call:
-
+Check example implementation in:
 ```
-await _nordicIdNurPlugin.requestRequiredPermissions();
+example/lib/main.dart
 ```
-
-### Initialising the plugin
-
-```
-await _nordicIdNurPlugin.init();
-```
-
-### Discover devices to connect to
-
-```
-await _nordicIdNurPlugin.startDeviceRequest();
-```
-
-### Scan QR/barcode
-
-```
-await _nordicIdNurPlugin.scanBarcode();
-```
-
-### Scan single RFID
-
-```
-await _nordicIdNurPlugin.scanSingleRFID();
-```
-
-### Scan multiple RFID
-
-```
-await _nordicIdNurPlugin.scanMultipleRFID();
-```
-

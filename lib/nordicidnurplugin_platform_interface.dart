@@ -1,3 +1,4 @@
+import 'package:nordicidnurplugin/nordicidnurplugin.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'nordicidnurplugin_method_channel.dart';
@@ -23,37 +24,61 @@ abstract class NordicidnurpluginPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  NordicidnurpluginCallback? callback;
+
+  void setCallback(NordicidnurpluginCallback callback) {
+    this.callback = callback;
+  }
+
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
   Future<bool> doesHaveRequiredPermissions() {
     throw UnimplementedError(
-        'doesHaveRequiredPermissions() has not been implemented.');
+      'doesHaveRequiredPermissions() has not been implemented.',
+    );
+  }
+
+  Future<bool> isInitialised() {
+    throw UnimplementedError('isInitialised() has not been implemented.');
   }
 
   Future<void> requestRequiredPermissions() {
     throw UnimplementedError(
-        'requestRequiredPermissions() has not been implemented.');
+      'requestRequiredPermissions() has not been implemented.',
+    );
   }
 
-  Future<void> init() {
+  Future<void> init({required bool autoConnect}) {
     throw UnimplementedError('init() has not been implemented.');
   }
 
-  Future<void> startDeviceRequest() {
-    throw UnimplementedError('startDeviceRequest() has not been implemented.');
+  Future<bool> isConnected() {
+    throw UnimplementedError('isConnected() has not been implemented.');
   }
 
-  Future<void> scanBarcode() {
+  Future<void> startDeviceDiscovery() {
+    throw UnimplementedError(
+      'startDeviceDiscovery() has not been implemented.',
+    );
+  }
+
+  Future<void> disconnect() {
+    throw UnimplementedError('disconnect() has not been implemented.');
+  }
+
+  Future<void> scanBarcode({required int timeout}) {
     throw UnimplementedError('scanBarcode() has not been implemented.');
   }
 
-  Future<void> scanSingleRFID() {
+  Future<void> scanSingleRFID({required int timeout}) {
     throw UnimplementedError('scanSingleRFID() has not been implemented.');
   }
 
-  Future<void> scanMultipleRFID() {
-    throw UnimplementedError('scanMultipleRFID() has not been implemented.');
+  Future<void> setInventoryStreamMode() {
+    throw UnimplementedError(
+      'setInventoryStreamMode() has not been implemented.',
+    );
   }
 }
