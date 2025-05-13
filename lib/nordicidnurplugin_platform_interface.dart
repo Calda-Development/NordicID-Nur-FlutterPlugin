@@ -24,9 +24,9 @@ abstract class NordicidnurpluginPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  NordicidnurpluginCallback? callback;
+  NordicIDNurPluginCallback? callback;
 
-  void setCallback(NordicidnurpluginCallback callback) {
+  void setCallback(NordicIDNurPluginCallback callback) {
     this.callback = callback;
   }
 

@@ -23,10 +23,10 @@ class _MyAppState extends State<MyApp> {
 
   bool _autoConnect = true;
 
-  late Nordicidnurplugin _nordicidnurPlugin;
+  late NordicIDNurPlugin _nordicIDNurPlugin;
 
-  List<String> barcodeScans = [];
-  String scannedRFIDTag = "";
+  List<String> _barcodeScans = [];
+  String _scannedRFIDTag = "";
 
   bool _inventoryStreamActive = false;
   List<String> _inventoryStreamResults = [];
@@ -35,8 +35,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    _nordicidnurPlugin = Nordicidnurplugin(
-      callback: NordicidnurpluginCallback(
+    _nordicIDNurPlugin = NordicIDNurPlugin(
+      callback: NordicIDNurPluginCallback(
         onInitialised: (bool isInitialised) {
           print('onInitialised: $isInitialised');
 
@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
         },
         onBarcodeScanned: (String data) {
           print('onBarcodeScanned: $data');
-          barcodeScans.add(data);
+          _barcodeScans.add(data);
           setState(() {});
         },
         onSingleRFIDScanned: (String data, RFIDScanError? error) {
@@ -66,9 +66,9 @@ class _MyAppState extends State<MyApp> {
 
           setState(() {
             if (data.isNotEmpty) {
-              scannedRFIDTag = data;
+              _scannedRFIDTag = data;
             } else {
-              scannedRFIDTag = "${error?.message}, ${error?.numberOfTags}";
+              _scannedRFIDTag = "${error?.message}, ${error?.numberOfTags}";
             }
           });
         },
@@ -103,7 +103,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _nordicidnurPlugin.getPlatformVersion() ??
+          await _nordicIDNurPlugin.getPlatformVersion() ??
           'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
@@ -111,10 +111,10 @@ class _MyAppState extends State<MyApp> {
 
     bool doesHaveRequiredPermissions = false;
     doesHaveRequiredPermissions =
-        await _nordicidnurPlugin.doesHaveRequiredPermissions();
-    bool isInitialised = await _nordicidnurPlugin.isInitialised();
+        await _nordicIDNurPlugin.doesHaveRequiredPermissions();
+    bool isInitialised = await _nordicIDNurPlugin.isInitialised();
     print('isInitialised: $isInitialised');
-    bool isConnected = await _nordicidnurPlugin.isConnected();
+    bool isConnected = await _nordicIDNurPlugin.isConnected();
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -172,7 +172,7 @@ class _MyAppState extends State<MyApp> {
           children: [
             OutlinedButton(
               onPressed: () async {
-                await _nordicidnurPlugin.requestRequiredPermissions();
+                await _nordicIDNurPlugin.requestRequiredPermissions();
               },
               child: Text('Request Permissions'),
             ),
@@ -201,7 +201,7 @@ class _MyAppState extends State<MyApp> {
             SizedBox(width: 8),
             OutlinedButton(
               onPressed: () async {
-                await _nordicidnurPlugin.init(autoConnect: _autoConnect);
+                await _nordicIDNurPlugin.init(autoConnect: _autoConnect);
               },
               child: Text('Init'),
             ),
@@ -214,7 +214,7 @@ class _MyAppState extends State<MyApp> {
           children: [
             OutlinedButton(
               onPressed: () async {
-                await _nordicidnurPlugin.startDeviceDiscovery();
+                await _nordicIDNurPlugin.startDeviceDiscovery();
               },
               child: Text('Start device discovery'),
             ),
@@ -225,7 +225,7 @@ class _MyAppState extends State<MyApp> {
           children: [
             OutlinedButton(
               onPressed: () async {
-                await _nordicidnurPlugin.disconnect();
+                await _nordicIDNurPlugin.disconnect();
               },
               child: Text('Disconnect'),
             ),
@@ -247,27 +247,27 @@ class _MyAppState extends State<MyApp> {
           children: [
             OutlinedButton(
               onPressed: () async {
-                await _nordicidnurPlugin.scanBarcode(timeout: 5000);
+                await _nordicIDNurPlugin.scanBarcode(timeout: 5000);
               },
               child: Text('Scan barcode mode'),
             ),
           ],
         ),
-        Text('Scanned barcodes: ${barcodeScans.length}'),
+        Text('Scanned barcodes: ${_barcodeScans.length}'),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ...barcodeScans
+            ..._barcodeScans
                 .asMap()
                 .map((index, value) => MapEntry(index, Text('#$index: $value')))
                 .values,
           ],
         ),
-        if (barcodeScans.isNotEmpty)
+        if (_barcodeScans.isNotEmpty)
           OutlinedButton(
             onPressed: () async {
               setState(() {
-                barcodeScans = [];
+                _barcodeScans = [];
               });
             },
             child: Text('clean'),
@@ -303,18 +303,18 @@ class _MyAppState extends State<MyApp> {
           children: [
             OutlinedButton(
               onPressed: () async {
-                await _nordicidnurPlugin.scanSingleRFID(timeout: 5000);
+                await _nordicIDNurPlugin.scanSingleRFID(timeout: 5000);
               },
               child: Text('scanSingleRFID mode'),
             ),
           ],
         ),
-        Text('Scanned RFID: $scannedRFIDTag'),
-        if (scannedRFIDTag.isNotEmpty)
+        Text('Scanned RFID: $_scannedRFIDTag'),
+        if (_scannedRFIDTag.isNotEmpty)
           OutlinedButton(
             onPressed: () async {
               setState(() {
-                scannedRFIDTag = "";
+                _scannedRFIDTag = "";
               });
             },
             child: Text('clean'),
@@ -335,7 +335,7 @@ class _MyAppState extends State<MyApp> {
           children: [
             OutlinedButton(
               onPressed: () async {
-                await _nordicidnurPlugin.setInventoryStreamMode();
+                await _nordicIDNurPlugin.setInventoryStreamMode();
               },
               child: Text('InventoryStream mode'),
             ),

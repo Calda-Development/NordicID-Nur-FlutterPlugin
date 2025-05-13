@@ -1,7 +1,7 @@
 import 'nordicidnurplugin_platform_interface.dart';
 
-class Nordicidnurplugin {
-  Nordicidnurplugin({required NordicidnurpluginCallback callback}) {
+class NordicIDNurPlugin {
+  NordicIDNurPlugin({required NordicIDNurPluginCallback callback}) {
     NordicidnurpluginPlatform.instance.setCallback(callback);
   }
 
@@ -50,7 +50,7 @@ class Nordicidnurplugin {
   }
 }
 
-class NordicidnurpluginCallback {
+class NordicIDNurPluginCallback {
   void Function(bool isInitialised) onInitialised;
   void Function() onConnected;
   void Function() onDisconnected;
@@ -60,7 +60,7 @@ class NordicidnurpluginCallback {
   void Function() onStopInventoryStream;
   void Function(List<String> data) onInventoryStreamEvent;
 
-  NordicidnurpluginCallback({
+  NordicIDNurPluginCallback({
     required this.onInitialised,
     required this.onConnected,
     required this.onDisconnected,

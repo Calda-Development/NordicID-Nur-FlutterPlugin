@@ -31,13 +31,11 @@ class NordicidnurpluginPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, 
 
   private val CHANNEL_doesHaveRequiredPermissions: String = "doesHaveRequiredPermissions"
   private val CHANNEL_requestRequiredPermissions: String = "requestRequiredPermissions"
-
   private val CHANNEL_init: String = "init"
   private val CHANNEL_isInitialised: String = "isInitialised"
   private val CHANNEL_isConnected: String = "isConnected"
   private val CHANNEL_startDeviceDiscovery: String = "startDeviceDiscovery"
   private val CHANNEL_disconnect: String = "disconnect"
-
   private val CHANNEL_scanBarcode: String = "scanBarcode"
   private val CHANNEL_scanSingleRFID: String = "scanSingleRFID"
   private val CHANNEL_setInventoryStreamMode: String = "setInventoryStreamMode"
