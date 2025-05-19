@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import com.nordicid.nuraccessory.*
 import com.nordicid.nurapi.*
 import com.nordicid.nurapi.NurApi.BANK_TID
@@ -29,6 +31,7 @@ object NurHelper {
     //When connected, this flag is set depending if Accessories like barcode scan, beep etc supported.
     private var mIsAccessorySupported: Boolean = false
     private var mIsConnected = false
+    private var connectionTimeout: Long = 5000
 
     //Need to keep track when barcode mScanning or mAiming ongoing in case it cancelled by trigger press or program leave
     private var mScanning = false
@@ -102,7 +105,9 @@ object NurHelper {
             if (BuildConfig.DEBUG) {
                 println("Dispose transport")
             }
-            hAcTr?.dispose()
+            hAcTr?.onStop();
+            hAcTr?.onDestroy();
+            hAcTr?.dispose();
         }
 
         val strAddress: String?
@@ -113,6 +118,14 @@ object NurHelper {
             Log.i(TAG, "NurDeviceSpec = " + spec.getSpec())
         }
         hAcTr?.setAddress(strAddress)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Check if mIsConnected
+
+            if (!mIsConnected) {
+                disconnect()
+            }
+        }, connectionTimeout) // 5000 milliseconds = 5 seconds
     }
 
     fun isInitialised(): Boolean {
@@ -133,14 +146,24 @@ object NurHelper {
     }
 
     fun disconnect() {
-        if(::mNurApi.isInitialized && mNurApi.isConnected()) {
+        if(hAcTr != null) {
+            hAcTr?.onStop();
+            hAcTr?.onDestroy();
             hAcTr?.dispose();
-            hAcTr = null;
-
-            context?.runOnUiThread {
-                methodChannel.invokeMethod("onDisconnected", null)
-            }
         }
+
+        context?.runOnUiThread {
+            methodChannel.invokeMethod("onDisconnected", null)
+        }
+
+//        if(::mNurApi.isInitialized && mNurApi.isConnected()) {
+//            hAcTr?.dispose();
+//            hAcTr = null;
+//
+//            context?.runOnUiThread {
+//                methodChannel.invokeMethod("onDisconnected", null)
+//            }
+//        }
     }
 
     fun isConnected(): Boolean {

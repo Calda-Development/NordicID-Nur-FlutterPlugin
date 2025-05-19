@@ -24,7 +24,7 @@ class MethodChannelNordicidnurplugin extends NordicidnurpluginPlatform {
   MethodChannelNordicidnurplugin() {
     methodChannel.setMethodCallHandler((call) async {
       debugPrint(
-        'MethodChannelNordicidnurplugin.methodChannel: ${call.method} ${call.arguments}',
+        'MethodChannelNordicidnurplugin.methodChannel: ${call.method}, args: ${call.arguments}',
       );
 
       if (call.method == METHOD_onInitialised) {
