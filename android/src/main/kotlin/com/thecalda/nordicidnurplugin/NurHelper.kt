@@ -62,6 +62,22 @@ object NurHelper {
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "init")
         }
+
+        val classNames = listOf(
+            "nordicid.com.nurupdate.NurDeviceUpdate",
+            "com.nordicid.smartpair.SmartPair",
+            "com.nordicid.nurapi.BleScanner"
+        )
+
+        for (className in classNames) {
+            val exists = checkClassExists(className)
+            Log.w(TAG, "Class $className exists: $exists")
+
+            if (!exists) {
+                return;
+            }
+        }
+
         this.context = activity
         this.methodChannel = channel;
 
@@ -85,7 +101,7 @@ object NurHelper {
 
         methodChannel.invokeMethod("onInitialised", true)
 
-        if(autoConnect) {
+        if (autoConnect) {
             try {
                 connectToDevice(hardcoded_integrated_device_address)
             } catch (e: Exception) {
@@ -140,13 +156,13 @@ object NurHelper {
             Log.i(TAG, "startDeviceDiscovery")
         }
 
-        if (::mNurApi.isInitialized ) {
+        if (isInitialised()) {
             NurDeviceListActivity.startDeviceRequest(activity, mNurApi)
         }
     }
 
     fun disconnect() {
-        if(hAcTr != null) {
+        if (hAcTr != null) {
             hAcTr?.onStop();
             hAcTr?.onDestroy();
             hAcTr?.dispose();
@@ -172,8 +188,8 @@ object NurHelper {
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (BuildConfig.DEBUG) {
-        Log.i(TAG, "onActivityResult; requestCode ${requestCode}, resultCode ${resultCode}")
-            }
+            Log.i(TAG, "onActivityResult; requestCode ${requestCode}, resultCode ${resultCode}")
+        }
         if (requestCode == NurDeviceListActivity.REQUEST_SELECT_DEVICE) {
             if (data == null || resultCode != NurDeviceListActivity.RESULT_OK) {
                 return
@@ -198,6 +214,9 @@ object NurHelper {
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "scanBarcode")
         }
+        if (!isInitialised()) {
+            return;
+        }
 
         barcodeScanTimeout = timeout
 
@@ -211,6 +230,9 @@ object NurHelper {
     fun scanSingleRFID(timeout: Int) {
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "scanSingleRFID")
+        }
+        if (!isInitialised()) {
+            return;
         }
 
         singleRFIDScanTimeout = timeout
@@ -228,6 +250,9 @@ object NurHelper {
     fun setInventoryStreamMode() {
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "setInventoryStreamMode")
+        }
+        if (!isInitialised()) {
+            return;
         }
 
         barcodeScanMode = false
@@ -578,10 +603,13 @@ object NurHelper {
                         singleRFIDScanTagFoundCount = 0
 
                         context?.runOnUiThread {
-                            methodChannel.invokeMethod("onSingleRFIDScanned", hashMapOf(
-                                "data" to "",
-                                "errorMessage" to "Too many tags seen!",
-                                "errorNumberOfTags" to resp.numTagsFound))
+                            methodChannel.invokeMethod(
+                                "onSingleRFIDScanned", hashMapOf(
+                                    "data" to "",
+                                    "errorMessage" to "Too many tags seen!",
+                                    "errorNumberOfTags" to resp.numTagsFound
+                                )
+                            )
                         }
 
                     } else {
@@ -603,7 +631,10 @@ object NurHelper {
                             foundATag = true;
 
                             context?.runOnUiThread {
-                                methodChannel.invokeMethod("onSingleRFIDScanned", hashMapOf("data" to tag.getEpcString()))
+                                methodChannel.invokeMethod(
+                                    "onSingleRFIDScanned",
+                                    hashMapOf("data" to tag.getEpcString())
+                                )
                             }
 
                             // TODO here we could check if tag is GS1 coded.
@@ -638,10 +669,13 @@ object NurHelper {
             }
             if (!foundATag) {
                 context?.runOnUiThread {
-                    methodChannel.invokeMethod("onSingleRFIDScanned", hashMapOf(
-                        "data" to "",
-                        "errorMessage" to "No tags found!",
-                        "errorNumberOfTags" to 0))
+                    methodChannel.invokeMethod(
+                        "onSingleRFIDScanned", hashMapOf(
+                            "data" to "",
+                            "errorMessage" to "No tags found!",
+                            "errorNumberOfTags" to 0
+                        )
+                    )
                 }
             }
 
@@ -710,5 +744,15 @@ object NurHelper {
             singleRFIDScanTagUnderReview = epc
         }
         return false
+    }
+
+    fun checkClassExists(className: String): Boolean {
+        return try {
+            // Try to load the class
+            Class.forName(className)
+            true // Class found
+        } catch (e: ClassNotFoundException) {
+            false // Class not found
+        }
     }
 }
