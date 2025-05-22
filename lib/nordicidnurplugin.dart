@@ -56,6 +56,8 @@ class NordicIDNurPluginCallback {
   void Function() onDisconnected;
   void Function(String data) onBarcodeScanned;
   void Function(String data, RFIDScanError? error) onSingleRFIDScanned;
+  void Function() onStartSingleRFIDScan;
+  void Function() onStopSingleRFIDScan;
   void Function() onStartInventoryStream;
   void Function() onStopInventoryStream;
   void Function(List<String> data) onInventoryStreamEvent;
@@ -66,6 +68,8 @@ class NordicIDNurPluginCallback {
     required this.onDisconnected,
     required this.onBarcodeScanned,
     required this.onSingleRFIDScanned,
+    required this.onStartSingleRFIDScan,
+    required this.onStopSingleRFIDScan,
     required this.onStartInventoryStream,
     required this.onStopInventoryStream,
     required this.onInventoryStreamEvent,

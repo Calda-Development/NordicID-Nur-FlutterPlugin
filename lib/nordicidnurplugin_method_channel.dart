@@ -12,7 +12,11 @@ class MethodChannelNordicidnurplugin extends NordicidnurpluginPlatform {
   final METHOD_onConnected = "onConnected";
   final METHOD_onDisconnected = "onDisconnected";
   final METHOD_onBarcodeScanned = "onBarcodeScanned";
+
   final METHOD_onSingleRFIDScanned = "onSingleRFIDScanned";
+  final METHOD_onStartSingleRFIDScan = "onStartSingleRFIDScan";
+  final METHOD_onStopSingleRFIDScan = "onStopSingleRFIDScan";
+
   final METHOD_onStartInventoryStream = "onStartInventoryStream";
   final METHOD_onStopInventoryStream = "onStopInventoryStream";
   final METHOD_onInventoryStreamEvent = "onInventoryStreamEvent";
@@ -50,6 +54,10 @@ class MethodChannelNordicidnurplugin extends NordicidnurpluginPlatform {
         }
 
         callback?.onSingleRFIDScanned(data, error);
+      } else if (call.method == METHOD_onStartSingleRFIDScan) {
+        callback?.onStartSingleRFIDScan();
+      } else if (call.method == METHOD_onStopSingleRFIDScan) {
+        callback?.onStopSingleRFIDScan();
       } else if (call.method == METHOD_onStartInventoryStream) {
         callback?.onStartInventoryStream();
       } else if (call.method == METHOD_onStopInventoryStream) {

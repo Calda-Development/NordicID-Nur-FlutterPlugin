@@ -567,6 +567,10 @@ object NurHelper {
             return
         }
 
+        context?.runOnUiThread {
+            methodChannel.invokeMethod("onStartSingleRFIDScan", null)
+        }
+
         var foundATag = false;
 
         val singleRFIDScanThread = Thread {
@@ -667,6 +671,11 @@ object NurHelper {
             if (BuildConfig.DEBUG) {
                 Log.i(TAG, "singleRFIDScan scan end")
             }
+
+            context?.runOnUiThread {
+                methodChannel.invokeMethod("onStopSingleRFIDScan", null)
+            }
+
             if (!foundATag) {
                 context?.runOnUiThread {
                     methodChannel.invokeMethod(

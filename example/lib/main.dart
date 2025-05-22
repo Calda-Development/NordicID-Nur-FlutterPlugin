@@ -72,6 +72,12 @@ class _MyAppState extends State<MyApp> {
             }
           });
         },
+        onStartSingleRFIDScan: () {
+          print('onStartSingleRFIDScan');
+        },
+        onStopSingleRFIDScan: () {
+          print('onStopSingleRFIDScan');
+        },
         onStartInventoryStream: () {
           print('onStartInventoryStream');
           setState(() {
