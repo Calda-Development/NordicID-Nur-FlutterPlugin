@@ -21,6 +21,8 @@ class MethodChannelNordicidnurplugin extends NordicidnurpluginPlatform {
   final METHOD_onStopInventoryStream = "onStopInventoryStream";
   final METHOD_onInventoryStreamEvent = "onInventoryStreamEvent";
 
+  final METHOD_setRfidSetupTxLevel = "setRfidSetupTxLevel";
+
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('nordicidnurplugin');
@@ -141,5 +143,21 @@ class MethodChannelNordicidnurplugin extends NordicidnurpluginPlatform {
   @override
   Future<void> setInventoryStreamMode() async {
     await methodChannel.invokeMethod<void>('setInventoryStreamMode');
+  }
+
+  @override
+  Future<void> setRfidSetupTxLevel({required int txLevelValue}) async {
+    await methodChannel
+        .invokeMethod<void>('setRfidSetupTxLevel', <String, dynamic>{
+      'txLevelValue': txLevelValue,
+    });
+  }
+
+  @override
+  Future<int> getRfidSetupTxLevel() async {
+    final result = await methodChannel.invokeMethod<int>(
+      'getRfidSetupTxLevel',
+    );
+    return result ?? -1;
   }
 }

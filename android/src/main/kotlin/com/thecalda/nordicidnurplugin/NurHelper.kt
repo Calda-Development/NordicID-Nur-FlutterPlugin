@@ -1,14 +1,14 @@
 package com.thecalda.nordicidnurplugin
 
+import android.R.attr.name
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.nordicid.nuraccessory.*
 import com.nordicid.nurapi.*
-import com.nordicid.nurapi.NurApi.BANK_TID
 import com.nordicid.tdt.*
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.*
@@ -49,8 +49,8 @@ object NurHelper {
 
     private var singleRFIDScanTimeout = 5000;
 
-    //Temporary storing current TX level because single tag will be search using low TX level
-    private var singleRFIDScanTempTxLevel: Int = 0
+//    //Temporary storing current TX level because single tag will be search using low TX level
+//    private var singleRFIDScanTempTxLevel: Int = 0
 
     //This counter add by one when single tag found after inventory. Reset to zero if multiple tags found.
     private var singleRFIDScanTagFoundCount: Int = 0
@@ -263,6 +263,30 @@ object NurHelper {
             mAccExt?.cancelBarcodeAsync()
         }
         thread.start()
+    }
+
+    fun setRfidSetupTxLevel(txLevelValue: Int) {
+        if (BuildConfig.DEBUG) {
+            Log.i(TAG, "setRfidSetupTxLevel")
+        }
+        if (!isInitialised()) {
+            return;
+        }
+
+        mNurApi.setSetupTxLevel(txLevelValue)
+    }
+
+    fun getRfidSetupTxLevel(): Int {
+        if (BuildConfig.DEBUG) {
+            Log.i(TAG, "getRfidSetupTxLevel")
+        }
+        if (!isInitialised()) {
+            return -1;
+        }
+
+        Log.i(TAG, "getRfidSetupTxLevel")
+
+        return mNurApi.getSetupTxLevel();
     }
 
     /**
@@ -579,16 +603,16 @@ object NurHelper {
             singleRFIDScanTagFoundCount = 0
 
             //Store current TX level of RFID reader
-            try {
-                singleRFIDScanTempTxLevel = mNurApi.getSetupTxLevel()
-                if (BuildConfig.DEBUG) {
-                    Log.i(TAG, "Current TxLevel = " + singleRFIDScanTempTxLevel)
-                }
-                //Set rather low TX power. You need to get close to tag for successful reading
-                mNurApi.setSetupTxLevel(NurApi.TXLEVEL_8)
-            } catch (ex: java.lang.Exception) {
-                ex.printStackTrace()
-            }
+//            try {
+//                singleRFIDScanTempTxLevel = mNurApi.getSetupTxLevel()
+//                if (BuildConfig.DEBUG) {
+//                    Log.i(TAG, "Current TxLevel = " + singleRFIDScanTempTxLevel)
+//                }
+//                //Set rather low TX power. You need to get close to tag for successful reading
+//                mNurApi.setSetupTxLevel(NurApi.TXLEVEL_8)
+//            } catch (ex: java.lang.Exception) {
+//                ex.printStackTrace()
+//            }
 
             val time_start = System.currentTimeMillis()
 
@@ -662,11 +686,11 @@ object NurHelper {
                 Thread.sleep(25)
             }
 
-            try {
-                mNurApi.setSetupTxLevel(singleRFIDScanTempTxLevel)
-            } catch (ex: java.lang.Exception) {
-                ex.printStackTrace()
-            }
+//            try {
+//                mNurApi.setSetupTxLevel(singleRFIDScanTempTxLevel)
+//            } catch (ex: java.lang.Exception) {
+//                ex.printStackTrace()
+//            }
 
             if (BuildConfig.DEBUG) {
                 Log.i(TAG, "singleRFIDScan scan end")
@@ -705,7 +729,7 @@ object NurHelper {
             return //Already running tasks so let's not disturb that operation.
         }
 
-        mNurApi.setSetupTxLevel(NurApi.TXLEVEL_27)
+//        mNurApi.setSetupTxLevel(NurApi.TXLEVEL_27)
 
         try {
             mNurApi.clearIdBuffer() //This command clears all tag data currently stored into the module’s memory as well as the API's internal storage.

@@ -81,4 +81,16 @@ abstract class NordicidnurpluginPlatform extends PlatformInterface {
       'setInventoryStreamMode() has not been implemented.',
     );
   }
+
+  Future<void> setRfidSetupTxLevel({required int txLevelValue}) {
+    throw UnimplementedError(
+      'setRfidSetupTxLevel() has not been implemented.',
+    );
+  }
+
+  Future<int> getRfidSetupTxLevel() {
+    throw UnimplementedError(
+      'getRfidSetupTxLevel() has not been implemented.',
+    );
+  }
 }

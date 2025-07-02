@@ -48,6 +48,15 @@ class NordicIDNurPlugin {
   Future<void> setInventoryStreamMode() {
     return NordicidnurpluginPlatform.instance.setInventoryStreamMode();
   }
+
+  Future<void> setRfidSetupTxLevel({required int txLevelValue}) {
+    return NordicidnurpluginPlatform.instance
+        .setRfidSetupTxLevel(txLevelValue: txLevelValue);
+  }
+
+  Future<int> getRfidSetupTxLevel() {
+    return NordicidnurpluginPlatform.instance.getRfidSetupTxLevel();
+  }
 }
 
 class NordicIDNurPluginCallback {
