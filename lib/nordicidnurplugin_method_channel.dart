@@ -160,4 +160,20 @@ class MethodChannelNordicidnurplugin extends NordicidnurpluginPlatform {
     );
     return result ?? -1;
   }
+
+  @override
+  Future<String> getReaderSerial() async {
+    final result = await methodChannel.invokeMethod<String>(
+      'getReaderSerial',
+    );
+    return result ?? '';
+  }
+
+  @override
+  Future<String> getReaderAltSerial() async {
+    final result = await methodChannel.invokeMethod<String>(
+      'getReaderAltSerial',
+    );
+    return result ?? '';
+  }
 }

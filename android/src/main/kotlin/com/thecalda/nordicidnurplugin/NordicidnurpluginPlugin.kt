@@ -41,6 +41,8 @@ class NordicidnurpluginPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, 
   private val CHANNEL_setInventoryStreamMode: String = "setInventoryStreamMode"
   private val CHANNEL_setRfidSetupTxLevel: String = "setRfidSetupTxLevel"
   private val CHANNEL_getRfidSetupTxLevel: String = "getRfidSetupTxLevel"
+  private val CHANNEL_getReaderSerial: String = "getReaderSerial"
+  private val CHANNEL_getReaderAltSerial: String = "getReaderAltSerial"
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL)
@@ -113,6 +115,14 @@ class NordicidnurpluginPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, 
       val rfidSetupTxLevel: Int = NurHelper.getRfidSetupTxLevel();
 
       result.success(rfidSetupTxLevel)
+    } else if (call.method == CHANNEL_getReaderSerial ) {
+      val readerSerial: String = NurHelper.getReaderSerial();
+
+      result.success(readerSerial)
+    } else if (call.method == CHANNEL_getReaderAltSerial ) {
+      val readerAltSerial: String = NurHelper.getReaderAltSerial();
+
+      result.success(readerAltSerial)
     } else {
       result.notImplemented()
     }

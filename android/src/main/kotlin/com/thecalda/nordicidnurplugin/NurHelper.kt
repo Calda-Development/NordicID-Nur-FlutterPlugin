@@ -289,6 +289,31 @@ object NurHelper {
         return mNurApi.getSetupTxLevel();
     }
 
+
+    fun getReaderSerial(): String {
+        if (BuildConfig.DEBUG) {
+            Log.i(TAG, "getReaderSerial")
+        }
+        if (!isInitialised()) {
+            return ""
+        }
+
+        val ri: NurRespReaderInfo = mNurApi.getReaderInfo()
+        return  ri.serial
+    }
+
+    fun getReaderAltSerial(): String {
+        if (BuildConfig.DEBUG) {
+            Log.i(TAG, "getReaderAltSerial")
+        }
+        if (!isInitialised()) {
+            return ""
+        }
+
+        val ri: NurRespReaderInfo = mNurApi.getReaderInfo()
+        return  ri.altSerial
+    }
+
     /**
      * NurApi event handlers.
      * NOTE: All NurApi events are called from NurApi thread, thus direct UI updates are not allowed.
@@ -788,4 +813,5 @@ object NurHelper {
             false // Class not found
         }
     }
+
 }

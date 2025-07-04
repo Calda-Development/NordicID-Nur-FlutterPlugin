@@ -57,6 +57,14 @@ class NordicIDNurPlugin {
   Future<int> getRfidSetupTxLevel() {
     return NordicidnurpluginPlatform.instance.getRfidSetupTxLevel();
   }
+
+  Future<String> getReaderSerial() {
+    return NordicidnurpluginPlatform.instance.getReaderSerial();
+  }
+
+  Future<String> getReaderAltSerial() {
+    return NordicidnurpluginPlatform.instance.getReaderAltSerial();
+  }
 }
 
 class NordicIDNurPluginCallback {

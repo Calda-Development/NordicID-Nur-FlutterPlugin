@@ -93,4 +93,16 @@ abstract class NordicidnurpluginPlatform extends PlatformInterface {
       'getRfidSetupTxLevel() has not been implemented.',
     );
   }
+
+  Future<String> getReaderSerial() {
+    throw UnimplementedError(
+      'getReaderSerial() has not been implemented.',
+    );
+  }
+
+  Future<String> getReaderAltSerial() {
+    throw UnimplementedError(
+      'getReaderAltSerial() has not been implemented.',
+    );
+  }
 }
